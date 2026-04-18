@@ -1,89 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Holiday Balance Tracker</title>
+<meta name="description"
+  content="Simplifying the complexity of the Danish Holiday Act. Automatically calculate accruals, track public holidays, and manage your holiday balance with ease.">
+<meta name="keywords"
+  content="Danish Holiday Act, Ferielov, Holiday Tracker, Vacation Planner, Denmark, Holiday Balance">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pr3mar.github.io/dhp/">
+<meta property="og:title" content="Holiday Balance Tracker - Danish Holiday Act Made Easy">
+<meta property="og:description"
+  content="Unburden yourself from Danish holiday complexities. Track accruals and plan your time off effortlessly.">
+<meta property="og:image" content="https://pr3mar.github.io/dhp/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://pr3mar.github.io/dhp/">
+<meta property="twitter:title" content="Holiday Balance Tracker - Danish Holiday Act Made Easy">
+<meta property="twitter:description"
+  content="Unburden yourself from Danish holiday complexities. Track accruals and plan your time off effortlessly.">
+<meta property="twitter:image" content="https://pr3mar.github.io/dhp/og-image.png">
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B8N5FT64HP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-B8N5FT64HP');
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-</head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
 <body>
 
-<header>
-  <div>
-    <h1>Holiday Balance Tracker</h1>
-    <div class="subtitle">Ferieloven strict logic &nbsp;·&nbsp; Accrual Sep–Aug &nbsp;·&nbsp; 2.08 days/month</div>
-    <div class="header-desc">
-      Simplifying the complexity of the Danish "Ferielov" (Holiday Act). This tool unburdens you by automatically 
-      calculating accruals, tracking public holidays, and managing your remaining balance so you can focus on your time off.
+  <header>
+    <div>
+      <h1>Danish Holiday Planner</h1>
+      <div class="subtitle">Ferieloven strict logic &nbsp;·&nbsp; Accrual Sep–Aug &nbsp;·&nbsp; 2.08 days/month</div>
+      <div class="header-desc">
+        Simplifying the complexity of the Danish "Ferielov" (Holiday Act). This tool unburdens you by automatically
+        calculating accruals, tracking public holidays, and managing your remaining balance so you can focus on your
+        time off.
+      </div>
+    </div>
+  </header>
+
+  <details class="section" style="margin-bottom: 24px;">
+    <summary class="section-header"
+      style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+      Configuration
+      <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Click to expand</span>
+    </summary>
+
+    <div class="settings-layout" id="settings-layout">
+      <!-- Populated by script.js -->
+    </div>
+
+    <div style="padding: 20px; border-top: 1px solid var(--surface-border); display: flex; gap: 12px;">
+      <button class="btn" onclick="document.getElementById('csv-import').click()">Import CSV Data</button>
+      <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)">
+      <button class="btn" onclick="exportCSV()">Export CSV Data</button>
+    </div>
+  </details>
+
+  <div class="cards">
+    <div class="card available">
+      <div class="card-label">Total entitlement</div>
+      <div class="card-value" id="c-avail">0.0</div>
+    </div>
+    <div class="card used">
+      <div class="card-label">Used</div>
+      <div class="card-value" id="c-used">0.0</div>
+    </div>
+    <div class="card planned">
+      <div class="card-label">Planned</div>
+      <div class="card-value" id="c-planned">0.0</div>
+    </div>
+    <div class="card remaining" id="card-remaining">
+      <div class="card-label">Unplanned</div>
+      <div class="card-value" id="c-remaining">0.0</div>
+    </div>
+    <div class="card remote" id="card-remote">
+      <div class="card-label">Remote remaining</div>
+      <div class="card-value" id="c-remote">0.0</div>
     </div>
   </div>
-</header>
 
-<details class="section" style="margin-bottom: 24px;">
-  <summary class="section-header" style="cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
-    Configuration 
-    <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Click to expand</span>
-  </summary>
-  
-  <div class="settings-layout" id="settings-layout">
-    <!-- Populated by script.js -->
+  <div class="alerts" id="alerts-box"></div>
+
+  <div class="section">
+    <div class="section-header">Pool overview</div>
+    <div class="pool-grid" id="pool-grid"></div>
   </div>
-  
-  <div style="padding: 20px; border-top: 1px solid var(--surface-border); display: flex; gap: 12px;">
-    <button class="btn" onclick="document.getElementById('csv-import').click()">Import CSV Data</button>
-    <input type="file" id="csv-import" accept=".csv" style="display:none" onchange="importCSV(event)">
-    <button class="btn" onclick="exportCSV()">Export CSV Data</button>
-  </div>
-</details>
 
-<div class="cards">
-  <div class="card available"><div class="card-label">Total entitlement</div><div class="card-value" id="c-avail">0.0</div></div>
-  <div class="card used"><div class="card-label">Used</div><div class="card-value" id="c-used">0.0</div></div>
-  <div class="card planned"><div class="card-label">Planned</div><div class="card-value" id="c-planned">0.0</div></div>
-  <div class="card remaining" id="card-remaining"><div class="card-label">Unplanned</div><div class="card-value" id="c-remaining">0.0</div></div>
-  <div class="card remote" id="card-remote"><div class="card-label">Remote remaining</div><div class="card-value" id="c-remote">0.0</div></div>
-</div>
-
-<div class="alerts" id="alerts-box"></div>
-
-<div class="section">
-  <div class="section-header">Pool overview</div>
-  <div class="pool-grid" id="pool-grid"></div>
-</div>
-
-<div class="section">
-  <div class="section-header">Holiday log</div>
-  <div id="log-list" class="log-list"></div>
-  <div class="add-form">
-    <div><label>Description</label><input id="f-desc" type="text" placeholder="e.g. Summer week 1"></div>
-    <div><label>Start Date</label><input id="f-start" type="date"></div>
-    <div><label>End Date</label><input id="f-end" type="date"></div>
-    <div><label>Type</label>
-      <select id="f-type">
-        <option value="Holiday">Holiday</option>
-        <option value="Remote work">Remote work</option>
-      </select>
-    </div>
-    <div style="display: flex; align-items: flex-end;">
-      <button class="btn btn-primary" style="height: 35px; width:100%" onclick="addEntry()">Add Holiday</button>
+  <div class="section">
+    <div class="section-header">Holiday log</div>
+    <div id="log-list" class="log-list"></div>
+    <div class="add-form">
+      <div><label>Description</label><input id="f-desc" type="text" placeholder="e.g. Summer week 1"></div>
+      <div><label>Start Date</label><input id="f-start" type="date"></div>
+      <div><label>End Date</label><input id="f-end" type="date"></div>
+      <div><label>Type</label>
+        <select id="f-type">
+          <option value="Holiday">Holiday</option>
+          <option value="Remote work">Remote work</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: flex-end;">
+        <button class="btn btn-primary" style="height: 35px; width:100%" onclick="addEntry()">Add Holiday</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="section">
-  <div class="section-header">Accrual calendar</div>
-  <div class="year-tabs" id="acc-tabs"></div>
-  <div class="accrual-grid" id="acc-grid"></div>
-</div>
+  <div class="section">
+    <div class="section-header">Accrual calendar</div>
+    <div class="year-tabs" id="acc-tabs"></div>
+    <div class="accrual-grid" id="acc-grid"></div>
+  </div>
 
-<footer>
-  <p>Released under the MIT License. Making Danish holidays easy to plan.</p>
-</footer>
+  <footer>
+    <p>Released under the MIT License. Making Danish holidays easy to plan.</p>
+  </footer>
 
   <script src="js/store.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/app.js"></script>
 </body>
+
 </html>
