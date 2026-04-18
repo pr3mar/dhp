@@ -21,13 +21,39 @@
   content="Unburden yourself from Danish holiday complexities. Track accruals and plan your time off effortlessly.">
 <meta property="twitter:image" content="https://pr3mar.github.io/dhp/og-image.png">
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B8N5FT64HP"></script>
+<!-- Google Analytics (Conditional) -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-B8N5FT64HP');
+  function loadGA() {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-B8N5FT64HP';
+    document.head.appendChild(script);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-B8N5FT64HP');
+  }
+
+  window.addEventListener('load', () => {
+    const consent = localStorage.getItem('cookie-consent');
+    if (consent === 'accepted') {
+      loadGA();
+    } else if (consent !== 'declined') {
+      document.getElementById('cookie-banner').style.display = 'flex';
+    }
+  });
+
+  function acceptCookies() {
+    localStorage.setItem('cookie-consent', 'accepted');
+    document.getElementById('cookie-banner').style.display = 'none';
+    loadGA();
+  }
+
+  function declineCookies() {
+    localStorage.setItem('cookie-consent', 'declined');
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -121,6 +147,16 @@
     <div class="section-header">Accrual calendar</div>
     <div class="year-tabs" id="acc-tabs"></div>
     <div class="accrual-grid" id="acc-grid"></div>
+  </div>
+
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+    <div class="cookie-content">
+      <p>We use cookies to improve your experience and analyze site usage.</p>
+      <div class="cookie-actions">
+        <button class="btn" onclick="declineCookies()">Decline</button>
+        <button class="btn btn-primary" onclick="acceptCookies()">Accept</button>
+      </div>
+    </div>
   </div>
 
   <footer>

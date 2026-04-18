@@ -289,3 +289,42 @@ footer {
   border-top: 1px solid var(--surface-border);
   margin-top: 40px;
 }
+
+.cookie-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: slideUp 0.4s ease-out;
+}
+.cookie-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+.cookie-content p { font-size: 13px; color: var(--text); margin: 0; }
+.cookie-actions { display: flex; gap: 8px; }
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .cookie-content { flex-direction: column; text-align: center; }
+  .cookie-actions { width: 100%; }
+  .cookie-actions button { flex: 1; }
+}
